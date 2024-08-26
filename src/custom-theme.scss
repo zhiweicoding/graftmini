@@ -1,0 +1,13 @@
+/* Custom Theme */
+/* 改变主题变量，具体变量名可查看 taro-ui/dist/style/variables/default.scss 文件 */
+$color-brand: #f5222d;
+$color-brand-light: #f85962;
+$color-brand-dark: #c41b24;
+
+// 主色调
+$color-primary: #f5222d;
+$color-primary-end: #f85962;
+/* 引入 Taro UI 默认样式 */
+@import "~taro-ui/dist/style/index.scss";
+@import '@nutui/nutui-react-taro/dist/style.css';
+

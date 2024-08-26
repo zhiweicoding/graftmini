@@ -1,0 +1,131 @@
+page {
+  height: 100%;
+  width: 100%;
+  background: #f4f4f4;
+}
+
+.container {
+  background: #f4f4f4;
+  height: auto;
+  overflow: hidden;
+  width: 100%;
+}
+
+.profile-info {
+  width: 100%;
+  height: 280px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 0 30.25px;
+  background: #333;
+}
+
+.profile-info .avatar {
+  height: 148px;
+  width: 148px;
+  border-radius: 50%;
+}
+
+.profile-info .info {
+  flex: 1;
+  height: 85px;
+  padding-left: 31.25px;
+}
+
+.profile-info .name {
+  display: block;
+  height: 45px;
+  line-height: 45px;
+  color: #fff;
+  font-size: 37.5px;
+  margin-bottom: 10px;
+}
+
+.profile-info .level {
+  display: block;
+  height: 30px;
+  line-height: 30px;
+  margin-bottom: 10px;
+  color: #7f7f7f;
+  font-size: 30px;
+}
+
+.user-menu {
+  width: 100%;
+  height: auto;
+  overflow: hidden;
+  background: #fff;
+}
+
+.user-menu .item {
+  float: left;
+  width: 33%;
+  height: 187.5px;
+  border-right: 2px solid rgba(0, 0, 0, .15);
+  border-bottom: 2px solid rgba(0, 0, 0, .15);
+  text-align: center;
+}
+
+.user-menu .item .a {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.user-menu .item .no-border {
+  border-right: 0;
+}
+
+.user-menu .item.item-bottom {
+  border-bottom: none;
+}
+
+.user-menu .icon {
+  display: block;
+  height: 52.803px;
+  width: 52.803px;
+  margin: 0 auto 16px;
+}
+
+.user-menu .icon.staff {
+  background: url(../../../assets/service_light.png) no-repeat;
+  background-size: 52.803px;
+}
+
+.user-menu .icon.footprint {
+  background: url(../../../assets/footprint.png) no-repeat;
+  background-size: 52.803px;
+}
+
+.user-menu .icon.mail {
+  background: url(../../../assets/mail.png) no-repeat;
+  background-size: 52.803px;
+}
+.user-menu .icon.storeList {
+  background: url(../../../assets/mall_light.png) no-repeat;
+  background-size: 52.803px;
+}
+
+.user-menu .txt {
+  display: block;
+  height: 24px;
+  width: 100%;
+  font-size: 24px;
+  color: #333;
+}
+
+.logout {
+  margin-top: 50px;
+  height: 101px;
+  width: 100%;
+  line-height: 101px;
+  text-align: center;
+  background: #fff;
+  color: #333;
+  font-size: 30px;
+}

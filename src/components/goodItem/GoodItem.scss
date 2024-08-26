@@ -1,0 +1,97 @@
+.good {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 10px;
+  width: 372px;
+  background: #fff;
+  border-radius: 15px;
+
+  &-img {
+    width: 350px;
+    height: 350px;
+    border-radius: 10px;
+    margin: 0 auto;
+  }
+
+  &-grid {
+    padding: 10px 10px 10px 20px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+
+    &-title {
+      font-size: 28px;
+      color: #333;
+      width: 92%;
+    }
+
+    &-mid {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+
+      &-price {
+        font-size: 30px;
+        color: #f5222d;
+        display: flex;
+        flex-direction: row;
+
+        &-currency {
+
+        }
+
+        &-money {
+
+        }
+
+        &-after {
+          font-size: 20px;
+          color: #f5222d;
+        }
+      }
+
+      &-like {
+
+      }
+    }
+
+    &-brief {
+      width: 92%;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      align-content: center;
+
+      &-left {
+        font-size: 24px;
+        color: #999;
+        overflow: hidden;
+        width: 60%;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        margin-top: 8px;
+        line-height: 1.2; // 根据需要调整行高
+        text-align: left; // 文本居中
+      }
+
+      &-right {
+        display: flex;
+        flex-direction: row;
+
+        &-like {
+          font-size: 20px;
+          line-height: 26px;
+          color: #f5222d;
+        }
+
+        &-heart {
+          color: #f5222d;
+          margin-right: 5px;
+
+        }
+      }
+    }
+  }
+}

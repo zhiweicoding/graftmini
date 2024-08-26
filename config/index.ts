@@ -1,10 +1,13 @@
-import { defineConfig, type UserConfigExport } from '@tarojs/cli'
+import path from 'path'
+import {defineConfig, type UserConfigExport} from '@tarojs/cli'
 import TsconfigPathsPlugin from 'tsconfig-paths-webpack-plugin'
 import devConfig from './dev'
 import prodConfig from './prod'
 
 // https://taro-docs.jd.com/docs/next/config#defineconfig-辅助函数
-export default defineConfig(async (merge, { command, mode }) => {
+export default defineConfig(async (merge, {command, mode}) => {
+  console.log(`command:${command}`)
+  console.log(`mode:${mode}`)
   const baseConfig: UserConfigExport = {
     projectName: 'graftmini',
     date: '2024-8-26',
@@ -16,18 +19,23 @@ export default defineConfig(async (merge, { command, mode }) => {
       828: 1.81 / 2
     },
     sourceRoot: 'src',
-    outputRoot: 'dist',
-    plugins: [],
-    defineConstants: {
+    outputRoot: `dist/${process.env.TARO_ENV}`,
+    plugins: ['@tarojs/plugin-html'],
+    defineConstants: {},
+    alias: {
+      '@graft': path.resolve(__dirname, '..', 'src'),
     },
     copy: {
-      patterns: [
-      ],
-      options: {
-      }
+      patterns: [],
+      options: {}
     },
     framework: 'react',
-    compiler: 'webpack5',
+    compiler: {
+      type: 'webpack5',
+      prebundle: {
+        exclude: ['@nutui/nutui-react-taro', '@nutui/icons-react-taro']
+      }
+    },
     cache: {
       enable: false // Webpack 持久化缓存配置，建议开启。默认配置请参考：https://docs.taro.zone/docs/config-detail#cache
     },
@@ -35,9 +43,7 @@ export default defineConfig(async (merge, { command, mode }) => {
       postcss: {
         pxtransform: {
           enable: true,
-          config: {
-
-          }
+          config: {}
         },
         url: {
           enable: true,
