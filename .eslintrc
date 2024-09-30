@@ -1,7 +1,30 @@
 {
-  "extends": ["taro/react"],
+  "extends": [
+    "taro/react"
+  ],
   "rules": {
     "react/jsx-uses-react": "off",
-    "react/react-in-jsx-scope": "off"
+    "react/react-in-jsx-scope": "off",
+    "react/jsx-curly-brace-presence": "off",
+    "react/jsx-tag-spacing": "off",
+    // 禁用格式化相关规则
+    "indent": "off",
+    "quotes": "off",
+    "semi": "off",
+    "comma-dangle": "off",
+    "object-curly-spacing": "off",
+    "array-bracket-spacing": "off",
+    "jsx-quotes": "off",
+    "react/jsx-indent": "off",
+    "react/jsx-indent-props": "off",
+    "max-len": "off",
+    "no-multiple-empty-lines": "off",
+    "eol-last": "off",
+    "space-before-function-paren": "off",
+    "space-in-parens": "off",
+    "keyword-spacing": "off",
+    "space-infix-ops": "off",
+    "padded-blocks": "off",
+    "brace-style": "off"
   }
 }

@@ -2,7 +2,6 @@ import React, {useState, useEffect} from 'react';
 import Taro, {useDidShow, useDidHide, useShareAppMessage} from '@tarojs/taro';
 import {View, BaseEventOrig, Image} from '@tarojs/components';
 import {AtButton} from "taro-ui";
-import HorGoodItemWhole from "@graft/components/horGoodItemWhole/HorGoodItemWhole";
 import noData from "@graft/assets/no-data.png";
 import './footprint.scss';
 
@@ -37,16 +36,16 @@ const Footprint: React.FC = () => {
 
   useShareAppMessage(() => {
     return {
-      title: '电动车产品库',
-      desc: '电动车产品库',
-      path: '/pages/index/index',
+      title: '红抖抖去水印',
+      desc: '愿所有的视频没有水印',
+      path: "/pages/index/index?share=true",
     };
   });
 
   const handleTouchStart = (event: BaseEventOrig) => {
-    const startTimestamp = event.timeStamp
-    setStartTimestamp(startTimestamp)
-    console.log(`startTimestamp:${startTimestamp}`)
+    const tempStartTimestamp = event.timeStamp
+    setStartTimestamp(tempStartTimestamp)
+    console.log(`startTimestamp:${tempStartTimestamp}`)
   };
 
   const handleTouchEnd = (event: BaseEventOrig, item: Params.FootprintEntity) => {
@@ -82,14 +81,14 @@ const Footprint: React.FC = () => {
         });
       }
     } else {
-      Taro.navigateTo({
+      await Taro.navigateTo({
         url: `/pages/detail/detail?goodId=${item.goodId}`,
       });
     }
   };
 
   const jumpIndex = async () => {
-    Taro.switchTab({
+    await Taro.switchTab({
       url: `/pages/index/index`
     });
   }
@@ -112,12 +111,12 @@ const Footprint: React.FC = () => {
         )}
         {footprintList.length > 0 && footprintList.map((item, index) => {
 
-          const goodItem: Params.GoodItem = {
-            goodId: item.goodId,
-            goodTitle: item.goodTitle,
-            goodBrief: item.goodBrief,
-            scenePicUrl: item.url,
-          };
+          // const goodItem: Params.HalfWidthIconBtn = {
+          //   goodId: item.goodId,
+          //   goodTitle: item.goodTitle,
+          //   goodBrief: item.goodBrief,
+          //   scenePicUrl: item.url,
+          // };
           return (
             <View
               className='footprint-item'
@@ -125,7 +124,7 @@ const Footprint: React.FC = () => {
               onTouchStart={(e) => handleTouchStart(e)}
               onTouchEnd={(e) => handleTouchEnd(e, item)}
             >
-              <HorGoodItemWhole goodItem={goodItem}></HorGoodItemWhole>
+              <View>one item of the parse data</View>
             </View>
           );
         })}

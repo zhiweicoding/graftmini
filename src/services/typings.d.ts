@@ -3,67 +3,26 @@
 
 declare namespace Params {
 
+  /**
+   * SUCCESS(200, "成功"),
+   * BAD_REQUEST(400, "请求参数错误"),
+   * EMPTY(406, "数据为空"),
+   * FORBIDDEN(403, "没有该操作权限"),
+   * NOT_FOUND(404, "请求未找到"),
+   * METHOD_NOT_ALLOWED(405, "请求方法不正确"),
+   * LOCKED(423, "请求失败，请稍后重试"),
+   * TOO_MANY_REQUESTS(429, "请求过于频繁，请稍后重试"),
+   * INTERNAL_SERVER_ERROR(500, "系统异常"),
+   * ERROR_CONFIGURATION(502, "错误的配置项"),
+   * UNKNOWN(999, "未知错误"),
+   * UNAUTHORIZED(401, "账号未登录");
+   */
   interface BaseResult<T> {
-    msgInfo: string;
-    msgCode: number; // 1000 success, 10001 fail, 1002 no auth
-    msgBody: T;
-    msgBodySize: number;
-    isEmpty?: boolean;
-  }
-
-  type BannerListItem = {
-    id?: string;
-    link?: string;
-    imageUrl?: string;
-  };
-
-  type SymbolListItem = {
-    symbolId?: string;
-    symbolName?: string;
-    sortNum?: number;
-    isPopular?: number;
-    place?: number;
-    createTime?: number;
-    modifyTime?: number;
-    checked?: boolean;
-  };
-
-  type StoreListItem = {
-    storeId?: string;
-    storeName?: string;
-    storeDesc?: string;
-    storeLogo?: string;
-    phoneNum?: string;
-    backupPhoneNum?: string;
-    staffWx?: string;
-    address?: string;
-    goodNumber?: string;
-    lnglat?: string;
-    licenseUrl?: string;
-    createTime?: number;
-    modifyTime?: number;
-    isDelete?: number;
-  };
-
-  type Banner = {
-    id: string;
-    link: string;
-    imageUrl: string;
-  }
-
-  type FloorGood = {
-    id: string;
-    name: string;
-    goodsList: GoodItem[];
-  }
-
-  type HomeEntity = {
-    hotGoods: GoodItem[];
-    newGoods: GoodItem[];
-    brands: GoodItem[];
-    floorGoods: FloorGood[];
-    topics: GoodItem[];
-    banners: Banner[];
+    msg: string;
+    code: number;
+    data: T;
+    size: number;
+    empty?: boolean;
   }
 
   type GoodItem = {
@@ -86,54 +45,13 @@ declare namespace Params {
     isDelete?: number;
   };
 
-  interface CatalogEntity extends CatalogParam {
-    goodsList: GoodItem[];
-    symbolName: string;
+  type WxParam = {
+    code?: string;
   }
 
-  interface DefaultKeyword {
-    keyword: string;
-  }
-
-  interface KeywordBean {
-    is_hot: number;
-    keyword: string;
-    keywordId: string;
-  }
-
-  interface SearchRedirectEntity {
-    pageUrl?: string;
-    keywordId?: string;
-  }
-
-  interface SearchEntity {
-    helpKeywords: KeywordBean[];
-    historyKeyword: KeywordBean[];
-    hotKeywords: KeywordBean[];
-    defaultKeyword: DefaultKeyword;
-  }
-
-  type GoodIdParam = {
-    goodId?: string;
-  }
-
-  type SearchParam = {
-    keyword?: string;
-    keywordId?: string;
-  }
-
-  type AdviceParam = {
-    msg?: string;
-  }
-
-  type CatalogParam = {
-    isPopular?: number;
-    isNew?: number;
-    order?: string;
-    isChosen?: number;
-    symbolId?: string;
-    place?: number;
-    searchValue?: string;
+  type WxResponse = {
+    openid?: string;
+    unionid?: string;
   }
 
   type FootprintEntity = {
@@ -145,50 +63,26 @@ declare namespace Params {
     goodBrief?: string;
   }
 
-  type KeywordItem = {
-    keyword?: string;
-    keywordId?: string;
-    isHot?: number;
+  type AdviceParam = {
+    msg?: string;
   }
 
-  type StoreBean = {
-    storeId?: string;
-    storeName?: string;
-    storeDesc?: string;
-    storeLogo?: string;
-    phoneNum?: string;
-    backupPhoneNum?: string;
-    staffWx?: string;
-    address?: string;
-    lnglat?: string;
-    licenseUrl?: string;
-    isDelete?: number;
-    createTime?: number;
-    modifyTime?: number;
-    distance?: number;
-    lng?: number;
-    lat?: number;
-    checked?: boolean;
-  };
+  type MixParam = {
+    url?: string;
+  }
 
-  type StoreVo = {
-    cityName?: string;
-    searchVal?: string;
-    storeId?: string;
-    lng?: number;
-    lat?: number;
-  };
-
-  type CitySubItem = {
-    name: string;
-    lnglat: number[];
-  };
-
-  type CityItem = {
-    title: string;
-    key: string;
-    items: CitySubItem[];
-  };
+  type MixResponse = {
+    videoUrl?: string[];
+    coverUrl?: string;
+    title?: string;
+    desc?: string;
+    type?: number;
+    from?: string;
+    imageUrls?: string[];
+    empty: boolean;
+    mid: string;
+    author?: string;
+  }
 
   type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'HEAD' | 'OPTIONS' | 'TRACE' | 'CONNECT';
 }

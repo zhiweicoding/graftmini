@@ -1,0 +1,54 @@
+.float_windows {
+  display: flex;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(26, 26, 26, 0.9);
+  z-index: 998;
+
+  &_video {
+    width: 100%;
+    height: 100%;
+  }
+
+  &_img {
+    width: 100%;
+    height: 100%;
+  }
+
+  &_close {
+    width: 70px;
+    height: 70px;
+    background-color: #fff;
+    border-radius: 50%;
+    position: absolute;
+    padding: 15px;
+    bottom: 10%;
+    left: 44%;
+    box-shadow: 4px 8px 20px 10px rgba(102, 102, 102, 0.2);
+  }
+
+  .float_windows_close .at-icon {
+    animation: scaleAndPause 2.5s ease-in-out infinite;
+  }
+
+  @keyframes scaleAndPause {
+    0% {
+      transform: scale(0.9);
+    }
+    25% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(0.9);
+    }
+    75% {
+      transform: scale(1);
+    }
+    100% {
+      transform: scale(0.9);
+    }
+  }
+}

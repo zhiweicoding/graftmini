@@ -1,11 +1,14 @@
 import React, {useEffect} from 'react'
 import Taro, {useDidShow, useDidHide, useShareAppMessage, usePageScroll} from '@tarojs/taro';
-import './index.scss'
+import util from '@graft/utils/util'
+import {getIdByCode} from "@graft/services/api";
 import {
   Text,
   View,
   OpenData,
 } from '@tarojs/components'
+
+import './index.scss'
 
 const Index: React.FC = () => {
 
@@ -29,10 +32,10 @@ const Index: React.FC = () => {
 
   useShareAppMessage(() => {
     return {
-      title: '电动车产品库',
-      desc: '电动车产品库',
-      path: '/pages/mine/index/index',
-    }
+      title: '红抖抖去水印',
+      desc: '愿所有的视频没有水印',
+      path: "/pages/index/index?share=true",
+    };
   });
 
   usePageScroll((res) => {
@@ -40,20 +43,56 @@ const Index: React.FC = () => {
   });
 
   const footprintAction = () => {
-    Taro.navigateTo({
-      url: '/pages/mine/footprint/footprint'
-    });
+    let openid = Taro.getStorageSync("openid")
+    if (!openid) {
+      Taro.showModal({
+        title: '提示',
+        content: '未登录用户暂时无法查看解析记录，可以点击确定授权登录',
+        success: function (res) {
+          if (res.confirm) {
+            let code = null
+            util
+              .login()
+              .then(loginRes => {
+                code = loginRes.code
+                return util.getUserInfo()
+              })
+              .then(userInfo => {
+                if (!code) {
+                  Taro.showToast({
+                    title: '授权失败',
+                    icon: 'error'
+                  })
+                } else {
+                  console.log('login error:' + JSON.stringify(userInfo))
+                  getIdByCode({
+                    code: code
+                  }).then(getCodeRes => {
+                    openid = getCodeRes.openid;
+                    Taro.setStorageSync("openid", openid);
+                  }).catch(err => {
+                    console.error('login error:' + err)
+                  })
+                }
+              }).catch(err => {
+              console.error('login error:' + err)
+            })
+          }
+        }
+      })
+    } else {
+      Taro.navigateTo({
+        url: '/pages/mine/footprint/footprint'
+      })
+    }
   }
+
   const feedbackAction = async () => {
     Taro.navigateTo({
       url: '/pages/mine/feedback/feedback'
     });
   }
-  const storeAction = () => {
-    Taro.navigateTo({
-      url: '/pages/store/list/list'
-    });
-  }
+
 
   return (
     <View className='container'>
@@ -67,13 +106,7 @@ const Index: React.FC = () => {
         <View className='item'>
           <View className='a' onClick={footprintAction}>
             <Text className='icon footprint'></Text>
-            <Text className='txt'>浏览足迹</Text>
-          </View>
-        </View>
-        <View className='item'>
-          <View className='a' onClick={storeAction}>
-            <Text className='icon storeList'></Text>
-            <Text className='txt'>附近门店</Text>
+            <Text className='txt'>解析记录</Text>
           </View>
         </View>
         <View className='item'>

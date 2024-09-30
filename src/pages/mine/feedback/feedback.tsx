@@ -1,9 +1,9 @@
-import React, {useEffect, useState} from 'react'
-import {View, Textarea, Button,} from '@tarojs/components'
-import Taro, {useDidHide, useDidShow, usePageScroll, useShareAppMessage} from '@tarojs/taro'
-import {saveAdvice} from "@graft/services/api";
-import {AtToast} from "taro-ui";
-import './feedback.scss'
+import React, {useEffect, useState} from 'react';
+import {View, Textarea, Button} from '@tarojs/components';
+import Taro, {useDidHide, useDidShow, usePageScroll, useShareAppMessage} from '@tarojs/taro';
+import {saveAdvice} from '@graft/services/api';
+import {AtToast} from 'taro-ui';
+import './feedback.scss';
 
 const Feedback: React.FC = () => {
 
@@ -31,24 +31,24 @@ const Feedback: React.FC = () => {
 
   useShareAppMessage(() => {
     return {
-      title: '电动车产品库',
-      desc: '电动车产品库',
-      path: '/pages/mine/index/index',
-    }
+      title: '红抖抖去水印',
+      desc: '愿所有的视频没有水印',
+      path: "/pages/index/index?share=true",
+    };
   });
 
   usePageScroll((res) => {
-    console.log(res)
+    console.log(res);
   });
 
   const msgAction = async (e: any) => {
     setMsg(e.detail.value);
-  }
+  };
 
   const submitFeedback = async () => {
     try {
       const response: boolean = await saveAdvice({
-        msg: msg
+        msg: msg,
       });
       if (response) {
         setSubmitResult(true);
@@ -58,23 +58,25 @@ const Feedback: React.FC = () => {
         setSubmitResult(false);
       }
     } catch (error) {
-      console.error(error)
+      console.error(error);
     }
-  }
+  };
 
   const backAction = async () => {
-    Taro.switchTab({
-      url: '/pages/mine/index/index'
+    await Taro.switchTab({
+      url: '/pages/mine/index/index',
     });
-  }
+  };
 
   return (
     <View className='container'>
 
-      <AtToast isOpened={submitSuccess} text={`反馈成功`} status={`success`} hasMask={true} duration={2000}
-               onClose={backAction}></AtToast>
-      <AtToast isOpened={submitError} text={`操作失败`} status={`error`} hasMask={true} duration={2000}
-               onClose={backAction}></AtToast>
+      <AtToast isOpened={submitSuccess} text='反馈成功' status='success' hasMask duration={2000}
+               onClose={backAction}
+      ></AtToast>
+      <AtToast isOpened={submitError} text='操作失败' status='error' hasMask duration={2000}
+               onClose={backAction}
+      ></AtToast>
 
 
       <View className='fb-body'>
@@ -91,7 +93,7 @@ const Feedback: React.FC = () => {
         提交
       </Button>
     </View>
-  )
-}
+  );
+};
 
 export default Feedback;

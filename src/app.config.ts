@@ -1,8 +1,8 @@
 export default defineAppConfig({
   pages: [
     'pages/index/index',
-    'pages/history/index',
     'pages/help/index',
+    'pages/display/index',
     'pages/error/error',
     'pages/webview/webview',
     'pages/mine/index/index',
