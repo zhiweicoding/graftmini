@@ -82,7 +82,7 @@ const Feedback: React.FC = () => {
       <View className='fb-body'>
         <Textarea
           className='content'
-          placeholder='对我们书籍服务，你还有什么建议吗？你还希望在咱们的软件上看到什么书籍呢？请告诉我们...'
+          placeholder='对我们服务，你还有什么建议吗？你还希望在咱们的软件上看到什么功能呢？请告诉我们...'
           onInput={msgAction.bind(this)}
           value={msg}
         ></Textarea>

@@ -23,6 +23,7 @@ const MediaOverlay: React.FunctionComponent<MediaOverlayProps> = ({url, isVideo,
           object-fit='fill'
           loop
           muted
+          autoplay
           id='float_windows_video_id'
         />
       ) : (

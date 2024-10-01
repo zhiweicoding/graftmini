@@ -84,5 +84,21 @@ declare namespace Params {
     author?: string;
   }
 
+  type MixDisplay = {
+    urlArray: DisplayItem[];
+    content: string;
+    type: number;
+    from: string;
+    empty: boolean;
+    mid: string;
+    author?: string;
+  }
+
+  type DisplayItem = {
+    isVideo: boolean;
+    cover: string,
+    url: string
+  }
+
   type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'HEAD' | 'OPTIONS' | 'TRACE' | 'CONNECT';
 }

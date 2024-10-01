@@ -1,6 +1,6 @@
-import {View, Button, Radio, Text, Image} from "@tarojs/components";
+import {Button, Radio, View,} from "@tarojs/components";
 import Taro, {useShareAppMessage} from "@tarojs/taro";
-import React, {useState, useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import sharePic from "@graft/assets/sharePic.jpg";
 import MediaOverlay from "@graft/components/mediaOverlay/MediaOverlay";
 import DisplayItem from "@graft/components/displayItem/DisplayItem";
@@ -15,7 +15,7 @@ const Index: React.FunctionComponent<IIndexProps> = () => {
   const [mediaUrl, setMediaUrl] = useState<string>(''); // Set this to the URL you want to display
   const [isVideo, setIsVideo] = useState<boolean>(false); // Set to true if the URL is a video
   const [selectedItems, setSelectedItems] = useState<boolean[]>([true, true]); // Adjust size for the number of items
-
+  const [queryRes, setQueryRes] = useState<Params.MixDisplay | null>(null);
 
   useShareAppMessage(() => {
     return {
@@ -27,12 +27,62 @@ const Index: React.FunctionComponent<IIndexProps> = () => {
   });
 
   useEffect(() => {
+    // 获取存储的 queryRes
+    const storedQueryRes: Params.MixResponse = Taro.getStorageSync('queryRes');
+    if (storedQueryRes) {
+      const display: Params.MixDisplay = convertMixResponseToMixDisplay(storedQueryRes)
+      setQueryRes(display);
+
+      // 使用完后可以选择性地移除存储的数据
+      Taro.removeStorageSync('queryRes');
+    } else {
+      // 处理未获取到数据的情况
+      console.error('No queryRes found in storage');
+    }
   }, []);
 
+  const convertMixResponseToMixDisplay = (response: Params.MixResponse): Params.MixDisplay => {
+    let urlArray: Params.DisplayItem[] = [];
 
-  const clickVideo = () => {
-    setMediaUrl('https://finance.zhiwei.plus/proxy/oss/download/dy/20240910/MS4wLjABAAAAILurPd4X1WrC0e-PJsU9mQxBDDp2hLi8Z6h2xtg4fVgGIRXA2FHe3K2wraDe5oeM/5a066a950fc4409f92ccf0d57d3915ea_video.mp4');
-    setIsVideo(true);
+    if (response.videoUrl && response.videoUrl.length > 0) {
+      // 如果有视频，生成视频的 DisplayItem 数组
+      urlArray = response.videoUrl.map((videoUrl) => ({
+        isVideo: true,
+        cover: response.coverUrl || '', // 使用视频封面
+        url: videoUrl,
+      }));
+    } else if (response.imageUrls && response.imageUrls.length > 0) {
+      // 如果有图片，生成图片的 DisplayItem 数组
+      urlArray = response.imageUrls.map((imageUrl) => ({
+        isVideo: false,
+        cover: imageUrl, // 图片的封面就是图片本身
+        url: imageUrl,
+      }));
+    }
+    let content: string = '';
+    if (response.title && response.title.length > 0) {
+      content = response.title;
+    }
+    if (response.desc && response.desc.length > 0) {
+      content = content + '\n\t' + response.desc;
+    }
+
+    // 构造 MixDisplay 对象
+    return {
+      urlArray,
+      content: content,
+      type: response.type || 0,
+      from: response.from || '',
+      empty: response.empty,
+      mid: response.mid,
+      author: response.author,
+    };
+  }
+
+  const clickVideo = (item: Params.DisplayItem) => {
+    console.log(JSON.stringify(item))
+    setMediaUrl(item.url);
+    setIsVideo(item.isVideo);
     setDisplayFloat(true);
   }
   const closeFloat = () => {
@@ -74,23 +124,22 @@ const Index: React.FunctionComponent<IIndexProps> = () => {
             全选
           </Radio>
         </View>
-        {['Item 1', 'Item 2'].map((_item, index) => (
+        {queryRes?.urlArray.map((item, index) => (
           <DisplayItem
             key={index}
             index={index}
-            src='https://finance.zhiwei.plus/proxy/oss/download/dy/20240910/MS4wLjABAAAAILurPd4X1WrC0e-PJsU9mQxBDDp2hLi8Z6h2xtg4fVgGIRXA2FHe3K2wraDe5oeM/5a066a950fc4409f92ccf0d57d3915ea_cover.jpeg'
-            title={'图片'}
+            src={item.cover}
+            title={item.isVideo ? '视频' : '图片'}
             isSelected={selectedItems[index]}
             onToggleSelect={toggleSelectItem}
-            onClick={clickVideo}
+            onClick={() => clickVideo(item)}
           />
         ))}
       </View>
 
 
       <View className='description'>
-        <View className={'desc_first_line'}><View className='input_msg_txt'>靠近我就是夏天 #完美身材
-          #氛围感</View></View>
+        <View className={'desc_first_line'}><View className='input_msg_txt'>{queryRes?.content}</View></View>
         <View className={'desc_second_line'}><Button className={"copy_txt_btn"}>复制文案内容</Button></View>
       </View>
 

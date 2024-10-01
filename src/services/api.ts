@@ -9,7 +9,7 @@ const API = {
   getIdByCode: apiUrl + "/api/user/getIdByCode",
   queryById: apiUrl + "/api/mix/byId/",
   list: apiUrl + "/api/mix/list/",
-  AdviceSave: apiUrl + "v1/api/advice/save",
+  AdviceSave: apiUrl + "/v1/api/advice/save",
 };
 
 // 拦截器函数

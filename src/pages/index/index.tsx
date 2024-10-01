@@ -1,4 +1,4 @@
-import {View, Text, Button, Video, Swiper, SwiperItem, Image,} from "@tarojs/components";
+import {View, Text, Button, Swiper, SwiperItem, Image,} from "@tarojs/components";
 import {AtNoticebar} from 'taro-ui'
 import Taro, {useShareAppMessage} from "@tarojs/taro";
 import React, {useState, useEffect} from "react";
@@ -18,12 +18,7 @@ interface IIndexProps {
 
 const Index: React.FunctionComponent<IIndexProps> = () => {
   const [url, setUrl] = useState("");
-  const [videoUrl, setVideoUrl] = useState("");
   const [isShowBtn, setIsShowBtn] = useState(false);
-  const [savePath, setSavePath] = useState("");
-  const [startLoading, setStartLoading] = useState(false);
-  const [saveLoading, setSaveLoading] = useState(false);
-  const [isDownload, setIsDownload] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   useShareAppMessage(() => {
@@ -46,16 +41,9 @@ const Index: React.FunctionComponent<IIndexProps> = () => {
     };
   }, []);
 
-  // const toHistory = () => {
-  //   setIsShowBtn(false);
-  //   Taro.navigateTo({
-  //     url: "/pages/history/index",
-  //   });
-  // };
-
   const toHelp = () => {
     Taro.navigateTo({
-      url: "/pages/history/index",
+      url: "/pages/webview/webview",
     }).then(() => {
       console.log('redirect to webview ,show help page')
     })
@@ -96,31 +84,22 @@ const Index: React.FunctionComponent<IIndexProps> = () => {
 
   const start = () => {
     let urlNoText = findUrlByStr(url);
-    setStartLoading(true);
     setIsLoading(true);
 
     parse({
       url: urlNoText,
     }).then((res: Params.MixResponse) => {
-      setStartLoading(false);
       const pollForVideo = (rid: string) => {
         queryById(rid).then((queryRes: Params.MixResponse) => {
           if (queryRes.videoUrl && queryRes.videoUrl.length > 0 && !queryRes.empty) {
-            let tempVideoUrl = queryRes.videoUrl[0];
-            setVideoUrl(tempVideoUrl);
+            console.log(JSON.stringify(queryRes))
             setIsLoading(false);
-            let fileSys = Taro.getFileSystemManager();
-            fileSys.access({
-              path: tempVideoUrl,
-              success: () => {
-                setIsDownload(true);
-              },
-              fail: () => {
-                setIsDownload(false);
-              },
+            Taro.setStorageSync('queryRes', queryRes);
+            Taro.navigateTo({
+              url: `/pages/display/index`,
             });
-            setSavePath(tempVideoUrl);
           } else {
+            console.log("又一次")
             setTimeout(() => pollForVideo(res.mid), 1000);
           }
         }).catch((error) => {
@@ -132,128 +111,16 @@ const Index: React.FunctionComponent<IIndexProps> = () => {
       pollForVideo(res.mid);
     }).catch((error) => {
       console.error("Error in parse:", error);
-      setStartLoading(false);
       setIsLoading(false);
     });
   };
 
-  const download = (clallBack) => {
-    setSaveLoading(true);
-    let fileSys = Taro.getFileSystemManager();
-    fileSys.access({
-      path: savePath,
-      success: () => {
-        setSaveLoading(false);
-        clallBack(savePath);
-      },
-      fail: () => {
-        var openId = Taro.getStorageSync("openId");
-        var downUrl =
-          process.env.HOST +
-          "video/down?openId=" +
-          openId +
-          "&url=" +
-          encodeURI(videoUrl);
-
-        Taro.downloadFile({
-          url: downUrl,
-          success: (res) => {
-            if (res.statusCode === 200) {
-              fileSys.saveFile({
-                tempFilePath: res.tempFilePath,
-                filePath: savePath,
-                success: () => {
-                  setIsDownload(true);
-                  clallBack(savePath);
-                },
-              });
-            }
-          },
-        });
-      },
-    });
-  };
-
-  const shareFile = () => {
-    if (isDownload) {
-      Taro.shareFileMessage({
-        filePath: savePath,
-        success() {
-        },
-        fail(error) {
-          Taro.showToast({
-            title: error.errMsg,
-            icon: "none",
-            duration: 2000,
-            mask: true,
-          });
-        },
-      });
-    } else {
-      Taro.showToast({title: "正在下载视频...", icon: "none", duration: 2000, mask: true});
-      download(() => {
-        Taro.showToast({title: "视频下载成功，可以分享了", icon: "none", duration: 2000, mask: true});
-        setSaveLoading(false);
-      });
-    }
-
-  };
-  const saveVideo = (path) => {
-    Taro.getSetting({
-      success: (setting) => {
-        if (setting.authSetting["scope.writePhotosAlbum"]) {
-          Taro.saveVideoToPhotosAlbum({
-            filePath: path,
-            success: () => {
-              setSaveLoading(false);
-              Taro.showToast({
-                title: "保存成功",
-                icon: "success",
-                duration: 2000,
-              });
-            },
-          });
-        } else {
-          Taro.authorize({
-            scope: "scope.writePhotosAlbum",
-            success: () => {
-              Taro.saveVideoToPhotosAlbum({
-                filePath: path,
-                success: () => {
-                  setSaveLoading(false);
-                  Taro.showToast({
-                    title: "保存成功",
-                    icon: "success",
-                    duration: 2000,
-                  });
-                },
-              });
-            },
-            fail: () => {
-              Taro.showModal({
-                title: "提示",
-                content: "视频保存到相册需获取相册权限请允许开启权限",
-                confirmText: "确认",
-                cancelText: "取消",
-                success: (res) => {
-                  if (res.confirm) {
-                    Taro.openSetting({
-                      success: () => {
-                      },
-                    });
-                  }
-                },
-              });
-            },
-          });
-        }
-      },
-    });
-  };
 
   const toShare = () => {
-    Taro.showShareImageMenu({
-      path: sharePic
+    Taro.showShareMenu({
+      withShareTicket: true,
+    }).then(r => {
+      console.log(r)
     })
   }
 
@@ -345,7 +212,7 @@ const Index: React.FunctionComponent<IIndexProps> = () => {
         </View>
         <View>
           <Button
-            loading={startLoading}
+            loading={isLoading}
             onClick={start}
             disabled={!url}
             className='margin-20 start '
@@ -354,67 +221,28 @@ const Index: React.FunctionComponent<IIndexProps> = () => {
           </Button>
         </View>
 
-        {videoUrl ? (
-          <View className='flex flex-col margin-top-30'>
-            <View className='flex justify-center align-center '>
-              <Video style={{height: "360rpx"}} src={videoUrl}></Video>
-              <Text>{}</Text>
-            </View>
-            <View className='flex margin-top-30 padding-10  justify-between  align-center '>
-              <Button
-                onClick={shareFile}
-                className='btn-line'
-                style={{width: "120px"}}
-              >
-                分享视频
-              </Button>
-              <Button
-                onClick={() => {
-                  Taro.setClipboardData({data: videoUrl}).then(() => {
-                  });
-                }}
-                className='btn-line'
-                style={{width: "120px"}}
-              >
-                复制文案
-              </Button>
-            </View>
-            <View className='flex padding-10 justify-center align-center '>
-              <Button
-                loading={saveLoading}
-                onClick={() => {
-                  download((path) => {
-                    saveVideo(path);
-                  });
-                }}
-                style={{width: "284px"}}
-              >
-                保存至相册
-              </Button>
-            </View>
+
+        <View className='flex flex-col help'>
+          <Text className='title'>使用说明</Text>
+          <View className='flex flex-col  padding-20'>
+            <Text className='text'>
+              1、打开短视频APP，在视频界面找到分享按钮
+            </Text>
+            <Text className='text'>2、点击“复制链接”或分享到微信获取分享链接</Text>
+            <Text className='text'>
+              3、回到小程序,点击顶部虚线区域粘贴链接地址
+            </Text>
+            <Text className='text'>
+              4、点击上方“提取内容”按钮即可获得无水印视频
+            </Text>
           </View>
-        ) : (
-          <View className='flex flex-col help'>
-            <Text className='title'>使用说明</Text>
-            <View className='flex flex-col  padding-20'>
-              <Text className='text'>
-                1、打开短视频APP，在视频界面找到分享按钮
-              </Text>
-              <Text className='text'>2、点击“复制链接”或分享到微信获取分享链接</Text>
-              <Text className='text'>
-                3、回到小程序,点击顶部虚线区域粘贴链接地址
-              </Text>
-              <Text className='text'>
-                4、点击上方“提取内容”按钮即可获得无水印视频
-              </Text>
-            </View>
-          </View>
-        )}
+        </View>
+
 
         <View className='bottom-bar'>
           <HalfWidthIconBtn imgSrc={shareIcon} title={'分享给好友'} subTitle={'推荐给好友'}
                             lightColor={'rgba(224, 207, 186, 0.3)'} darkColor={'rgba(236, 207, 172, 0.6)'}
-                            onClick={toShare} openType={'share'}
+                            onClick={toShare}
           />
           <HalfWidthIconBtn imgSrc={tutorialIcon} title={'图文教程'} subTitle={'如何去水印'}
                             darkColor={'rgba(229, 199, 193, 0.3)'}
