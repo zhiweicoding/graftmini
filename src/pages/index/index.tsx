@@ -1,15 +1,16 @@
 import {View, Text, Button, Swiper, SwiperItem, Image,} from "@tarojs/components";
-import {AtNoticebar} from 'taro-ui'
+import {AtNoticebar, AtTextarea} from 'taro-ui'
 import Taro, {useShareAppMessage} from "@tarojs/taro";
 import React, {useState, useEffect} from "react";
-import shareIcon from "@graft/assets/share.png";
+// import shareIcon from "@graft/assets/share.png";
 import sharePic from "@graft/assets/sharePic.jpg";
-import tutorialIcon from "@graft/assets/howtouse.png";
+// import tutorialIcon from "@graft/assets/howtouse.png";
 import {parse, queryById} from "@graft/services/api";
-import HalfWidthIconBtn from "@graft/components/halfWidthIconBtn/halfWidthIconBtn";
+// import HalfWidthIconBtn from "@graft/components/halfWidthIconBtn/halfWidthIconBtn";
 import b1 from "@graft/assets/banner.png";
 import b2 from "@graft/assets/banner2.jpg";
 import Loading from "@graft/components/loading/Loading";
+
 
 import "./index.scss";
 
@@ -115,13 +116,9 @@ const Index: React.FunctionComponent<IIndexProps> = () => {
     });
   };
 
-
-  const toShare = () => {
-    Taro.showShareMenu({
-      withShareTicket: true,
-    }).then(r => {
-      console.log(r)
-    })
+  const inputText = (value: string) => {
+    setUrl(value)
+    setIsShowBtn(true);
   }
 
   return (
@@ -136,14 +133,14 @@ const Index: React.FunctionComponent<IIndexProps> = () => {
         indicatorDots={false}
         autoplay
       >
-        <SwiperItem>
+        <SwiperItem onClick={toHelp}>
           <Image
             src={b1}
             className='banner-item'
             mode='widthFix'
           ></Image>
         </SwiperItem>
-        <SwiperItem>
+        <SwiperItem onClick={toHelp}>
           <Image
             src={b2}
             className='banner-item'
@@ -158,66 +155,46 @@ const Index: React.FunctionComponent<IIndexProps> = () => {
           </AtNoticebar>
         </View>
         <View className='urlInput margin-20 min-height-160'>
-          {url ? (
-            <View className='hasurl min-height-160'>
-              <View
-                className='flex flex-1 padding-20'
-                onClick={() => {
-                  setIsShowBtn(true);
-                }}
-              >
-                <Text className='url '>{url}</Text>
-              </View>
-              {isShowBtn ? (
-                <View className='btns-warp flex flex-row justify-center align-center '>
-                  <View className='btns'>
-                    <Button
-                      onClick={() => {
-                        setIsShowBtn(false);
-                        Taro.setClipboardData({data: url});
-                      }}
-                      className='copy'
-                      size='mini'
-                    >
-                      复制
-                    </Button>
-                    <Button
-                      onClick={() => {
-                        setUrl("");
-                        setIsShowBtn(false);
-                      }}
-                      className='clear'
-                      size='mini'
-                    >
-                      清空
-                    </Button>
-                    {/* <Button onClick={toHistory} className="history" size="mini">
-                    历史
-                  </Button> */}
-                  </View>
+          <View className='hasurl min-height-160'>
+            <AtTextarea
+              value={url}
+              className='url '
+              onChange={inputText}
+              maxLength={500}
+              placeholder='点击① 粘贴链接或者直接复制分享链接到输入框...'
+            />
+            {isShowBtn ? (
+              <View className='btns-warp flex flex-row justify-center align-center '>
+                <View className='btns'>
+                  <Button
+                    onClick={() => {
+                      setUrl("");
+                      setIsShowBtn(false);
+                    }}
+                    className='clear'
+                    size='mini'
+                  >
+                    清空
+                  </Button>
                 </View>
-              ) : null}
-            </View>
-          ) : (
-            <View
-              className='flex flex-row justify-center align-center min-height-250'
-              onClick={getUrl}
-            >
-              <View className='flex flex-col'>
-                <Text>点击此区域粘贴链接地址</Text>
-                <Text className='tips'>提示：再次点击可清空或复制链接</Text>
               </View>
-            </View>
-          )}
+            ) : null}
+          </View>
         </View>
-        <View>
+        <View className={'btn_row'}>
+          <Button
+            onClick={getUrl}
+            className='margin-20 copy '
+          >
+            ① 粘贴链接
+          </Button>
           <Button
             loading={isLoading}
             onClick={start}
             disabled={!url}
             className='margin-20 start '
           >
-            提取内容
+            ② 提取内容
           </Button>
         </View>
 
@@ -238,16 +215,15 @@ const Index: React.FunctionComponent<IIndexProps> = () => {
           </View>
         </View>
 
-
         <View className='bottom-bar'>
-          <HalfWidthIconBtn imgSrc={shareIcon} title={'分享给好友'} subTitle={'推荐给好友'}
-                            lightColor={'rgba(224, 207, 186, 0.3)'} darkColor={'rgba(236, 207, 172, 0.6)'}
-                            onClick={toShare}
-          />
-          <HalfWidthIconBtn imgSrc={tutorialIcon} title={'图文教程'} subTitle={'如何去水印'}
-                            darkColor={'rgba(229, 199, 193, 0.3)'}
-                            lightColor={'rgba(241, 186, 175, 0.6)'} onClick={toHelp}
-          />
+          {/*<HalfWidthIconBtn imgSrc={shareIcon} title={'分享给好友'} subTitle={'推荐给好友'}*/}
+          {/*                  lightColor={'rgba(224, 207, 186, 0.3)'} darkColor={'rgba(236, 207, 172, 0.6)'}*/}
+          {/*                  onClick={toShare}*/}
+          {/*/>*/}
+          {/*<HalfWidthIconBtn imgSrc={tutorialIcon} title={'图文教程'} subTitle={'如何去水印'}*/}
+          {/*                  darkColor={'rgba(229, 199, 193, 0.3)'}*/}
+          {/*                  lightColor={'rgba(241, 186, 175, 0.6)'} onClick={toHelp}*/}
+          {/*/>*/}
         </View>
       </View>
     </View>

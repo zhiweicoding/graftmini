@@ -17,6 +17,7 @@
     .min-height-250 {
       min-height: 250px;
     }
+
   }
 
   .none {
@@ -35,15 +36,20 @@
 
   .btns-warp {
     min-height: 160px;
-    top: 0;
+    bottom: 0;
     height: 100%;
     width: 100%;
     background-color: rgba($color: #fff, $alpha: .8);
     position: absolute;
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-end;
+    z-index: 9999;
 
     button {
       margin: 0 20px;
     }
+
   }
 
   .help {
@@ -54,15 +60,33 @@
     }
   }
 
-  .start {
-    border-radius: 15px;
-    font-size: 32px;
-    color: white;
-    margin-top: 30px;
+  .btn_row {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+
+    .start {
+      width: 55%;
+      border-radius: 15px;
+      font-size: 32px;
+      color: white;
+      margin-top: 30px;
+    }
+
+    .copy {
+      width: 45%;
+      border-radius: 15px;
+      font-size: 32px;
+      color: #666;
+      margin-top: 30px;
+      background-color: white;
+      border: 1px solid #666;
+    }
   }
+
 }
 
-.fix-top-banner{
+.fix-top-banner {
   position: relative;
   top: -100px;
   background-color: white;
@@ -70,12 +94,17 @@
   border-top-right-radius: 50px;
 }
 
-.banner-list{
+.banner-list {
   width: 100%;
   height: 380px;
 }
 
-.banner-item{
+.banner-item {
   width: 100%;
+}
+
+.url {
+  border-radius: 10px;
+  border: 0;
 }
 
