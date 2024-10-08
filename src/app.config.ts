@@ -36,10 +36,11 @@ export default defineAppConfig({
       },
     ],
   },
-  // requiredPrivateInfos: ['getFuzzyLocation'],
-  // permission: {
-  //   'scope.userFuzzyLocation': {
-  //     desc: '你的位置信息将用于小程序位置接口的效果展示'
-  //   }
-  // },
+  requiredPrivateInfos: [
+  ],
+  permission: {
+    "scope.writePhotosAlbum": {
+      "desc": "你的相册权限将用于保存视频"
+    }
+  }
 })

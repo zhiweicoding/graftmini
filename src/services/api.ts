@@ -16,10 +16,11 @@ const API = {
 const interceptor = function (chain) {
   const requestParams = chain.requestParams
   const {method, data} = requestParams
-  let openid = Taro.getStorageSync('openid')
-  if (!openid && openid.length <= 0) {
-    openid = 'anonymous'
-  }
+  // let openid = Taro.getStorageSync('openid')
+  // if (!openid && openid.length <= 0) {
+  //   openid = 'anonymous'
+  // }
+  let openid = 'anonymous';
   if (method === 'POST') {
     requestParams.data = {
       ...data,

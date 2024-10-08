@@ -2,7 +2,7 @@
   "miniprogramRoot": "./dist",
   "projectname": "graftmini",
   "description": "graft mini program",
-  "appid": "touristappid",
+  "appid": "wx33b3492c3224f4ee",
   "setting": {
     "urlCheck": true,
     "es6": false,

@@ -9,9 +9,9 @@ const Loading: React.FC = () => {
   const [isTransitioning, setIsTransitioning] = useState<boolean>(false);
 
   const messages: string[] = [
-    "正在解析视频...",
-    "正在解析图文...",
-    "正在保存内容..."
+    "视频越大，解析时间会更久...",
+    "平均解析需要3-5s左右...",
+    "正在从对应app下载内容..."
   ];
 
   useEffect(() => {

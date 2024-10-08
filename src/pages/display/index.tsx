@@ -4,6 +4,7 @@ import React, {useEffect, useState} from "react";
 import sharePic from "@graft/assets/sharePic.jpg";
 import MediaOverlay from "@graft/components/mediaOverlay/MediaOverlay";
 import DisplayItem from "@graft/components/displayItem/DisplayItem";
+import ProgressModal from "@graft/components/loading/ProgressModal";
 
 import "./index.scss";
 
@@ -16,6 +17,12 @@ const Index: React.FunctionComponent<IIndexProps> = () => {
   const [isVideo, setIsVideo] = useState<boolean>(false); // Set to true if the URL is a video
   const [selectedItems, setSelectedItems] = useState<boolean[]>([true, true]); // Adjust size for the number of items
   const [queryRes, setQueryRes] = useState<Params.MixDisplay | null>(null);
+
+  const [progressModalVisible, setProgressModalVisible] = useState(false);
+  const [progressModalTitle, setProgressModalTitle] = useState('');
+  const [progressModalContent, setProgressModalContent] = useState('');
+  const [progressModalProgress, setProgressModalProgress] = useState(0);
+
 
   useShareAppMessage(() => {
     return {
@@ -103,6 +110,101 @@ const Index: React.FunctionComponent<IIndexProps> = () => {
     });
   };
 
+  const goBack = () => {
+    Taro.navigateBack()
+  }
+
+  const copyContent = (content: string | undefined) => {
+    if (content && content != '') {
+      Taro.setClipboardData({
+        data: content
+      })
+    }
+  }
+
+  const saveAll = async () => {
+    if (!queryRes) return;
+
+    const items: Params.DisplayItem[] = queryRes.urlArray.filter((_, index) => selectedItems[index]);
+
+    try {
+      setProgressModalVisible(true);
+      setProgressModalTitle('保存视频和图片到相册');
+
+      let completedFiles = 0;
+
+      const downloadAndSaveFile = async (url: string, itemIsVideo: boolean, index: number, total: number) => {
+        return new Promise<void>((resolve, reject) => {
+          if ((itemIsVideo && url.indexOf('mp4') > 0) || (!itemIsVideo && (url.indexOf('jpeg') > 0 || url.indexOf('jpg') > 0 || url.indexOf('png') > 0))) {
+            const downloadTask = Taro.downloadFile({
+              url: url,
+              success: (res) => {
+                console.log('video:' + url)
+                console.log('video:' + res.tempFilePath)
+                console.log('video:' + itemIsVideo)
+                if (itemIsVideo) {
+                  Taro.saveVideoToPhotosAlbum({
+                    filePath: res.tempFilePath,
+                    success: () => {
+                      completedFiles++;
+                      setProgressModalProgress((completedFiles / items.length) * 100);
+                      resolve();
+                    },
+                    fail: reject
+                  });
+                } else {
+                  console.log('img:' + url)
+                  console.log('img:' + res.tempFilePath)
+                  console.log('img:' + itemIsVideo)
+                  Taro.saveImageToPhotosAlbum({
+                    filePath: res.tempFilePath,
+                    success: () => {
+                      completedFiles++;
+                      setProgressModalProgress((completedFiles / items.length) * 100);
+                      resolve();
+                    },
+                    fail: reject
+                  });
+                }
+              },
+              fail: reject
+            });
+
+            downloadTask.onProgressUpdate((res) => {
+              setProgressModalContent(`下载${itemIsVideo ? '视频' : '图片'} ${index + 1}/${total} (${res.progress}%)`);
+            });
+          }
+
+        });
+      };
+
+
+      const itemPromises = items.map((item, index) =>
+        downloadAndSaveFile(item.url, item.isVideo, index, items.length)
+      );
+
+      await Promise.all([...itemPromises]);
+
+      // 所有文件都已下载和保存完成
+      setProgressModalVisible(false);
+
+      // 显示成功提示
+      await Taro.showToast({
+        title: '全部保存成功',
+        icon: 'success',
+        duration: 2000
+      });
+    } catch (error) {
+      console.error('保存过程中出错:', error);
+      setProgressModalVisible(false);
+      await Taro.showToast({
+        title: '保存失败',
+        icon: 'none',
+        duration: 2000
+      });
+    }
+  };
+
   return (
     <View className='container'>
 
@@ -111,6 +213,13 @@ const Index: React.FunctionComponent<IIndexProps> = () => {
         isVideo={isVideo}
         isVisible={displayFloat}
         onClose={closeFloat}
+      />
+
+      <ProgressModal
+        visible={progressModalVisible}
+        title={progressModalTitle}
+        content={progressModalContent}
+        progress={progressModalProgress}
       />
 
       <View className={'multi_info'}>
@@ -140,12 +249,19 @@ const Index: React.FunctionComponent<IIndexProps> = () => {
 
       <View className='description'>
         <View className={'desc_first_line'}><View className='input_msg_txt'>{queryRes?.content}</View></View>
-        <View className={'desc_second_line'}><Button className={"copy_txt_btn"}>复制文案内容</Button></View>
+        <View className={'desc_second_line'}>
+          <Button className={"copy_txt_btn"} onClick={() => copyContent(queryRes?.content)}>
+            复制文案内容
+          </Button>
+        </View>
       </View>
 
       <View className={"relation_bottom"}>
-        <Button className={"cancel_btn"}>取消</Button>
-        <Button className={"save_btn"}>保存视频到相册</Button>
+        <Button className={"cancel_btn"} onClick={goBack}>取消</Button>
+        <Button className={"save_btn"} onClick={() => {
+          saveAll()
+        }}
+        >保存视频到相册</Button>
       </View>
     </View>
   );

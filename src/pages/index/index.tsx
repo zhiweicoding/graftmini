@@ -92,7 +92,8 @@ const Index: React.FunctionComponent<IIndexProps> = () => {
     }).then((res: Params.MixResponse) => {
       const pollForVideo = (rid: string) => {
         queryById(rid).then((queryRes: Params.MixResponse) => {
-          if (queryRes.videoUrl && queryRes.videoUrl.length > 0 && !queryRes.empty) {
+          console.log(`queryRes:${JSON.stringify(queryRes)}`)
+          if (queryRes && queryRes.videoUrl && queryRes.videoUrl.length > 0 && !queryRes.empty) {
             console.log(JSON.stringify(queryRes))
             setIsLoading(false);
             Taro.setStorageSync('queryRes', queryRes);

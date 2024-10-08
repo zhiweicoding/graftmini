@@ -20,7 +20,7 @@ const MediaOverlay: React.FunctionComponent<MediaOverlayProps> = ({url, isVideo,
           className='float_windows_video'
           src={url}
           controls
-          object-fit='fill'
+          object-fit='contain'
           loop
           muted
           autoplay
